@@ -51,8 +51,9 @@ TOOLS = [
         "name": "request_clarification",
         "description": (
             "Ask the user for more information when their question is too vague "
-            "or could mean multiple things. Only use this when you genuinely cannot "
-            "proceed without more context."
+            "or could mean multiple things. **ALWAYS use this tool to ask clarifying questions** "
+            " - never ask clarifying questions in free-text responses. "
+            "This tool is the only correct mechanism for requesting clarification."
         ),
         "input_schema": {
             "type": "object",
@@ -72,7 +73,7 @@ Rules:
 - Always search the FAQ before answering. Do not rely on general knowledge about SaaS products.
 - If the FAQ has a clear answer, give it to the user in a friendly, concise way.
 - If the FAQ doesn't cover the question, escalate to a human. Do not make up answers.
-- If the user's question is genuinely ambiguous, ask for clarification, but only if needed.
+- If the user's question is genuinely ambiguous, you MUST call the request_clarification tool instead of asking for clarification in free text.
 - Keep responses short and direct. Customers want answers, not essays.
 """
 
@@ -103,6 +104,14 @@ def handle_user_message(user_message: str, verbose: bool = True) -> dict:
     Send a user message to the agent and run the full loop until a final response is received.
     Returns a dict with the final text response and medatada about what happened.
     """
+    # Handle empty input before calling the API
+    if not user_message or not user_message.strip():
+        return {
+            "response": "I didn't catch that - could you let me know what you would like help with?",
+            "tool_calls": [],
+            "escalated": False,
+            "clarification_requested": True, # treat empty input as needing clarification
+        }
     messages = [{"role": "user", "content": user_message}]
     tool_calls_made = []
     # The agent loop: keep calling Claude until it stops using tools
