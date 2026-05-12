@@ -8,7 +8,7 @@ TEST_CASES = [
     {"input": "How do I create a recurring task?", "expected_outcome": "answered", "category": "happy path"},
     # Paraphrased (same intent but different words - where keyword matching fails)
     {"input": "How can I pay?", "expected_outcome": "answered", "category": "paraphrased"},
-    {"input": "I want to close my account", "expected_outcome": "answered", "category": " paraphrased"},
+    {"input": "I want to close my account", "expected_outcome": "answered", "category": "paraphrased"},
     {"input": "Will this sync with my Google Calendar?", "expected_outcome": "answered", "category": "paraphrased"},
     {"input": "Is it possible to download my data?", "expected_outcome": "answered", "category": "paraphrased"},
     # Multi-part questions
@@ -18,16 +18,16 @@ TEST_CASES = [
     {"input": "It is not working", "expected_outcome": "clarified", "category": "ambiguous"},
     {"input": "I have a question about my account", "expected_outcome": "clarified", "category": "ambiguous"},
     # Out of scope (escalate)
-    {"input": "I want to speak to a human", "expected_outcome": "escalated", "category": "explicit_request"},
-    {"input": "Why was I charged $1234 last Friday?", "expected_outcome": "escalated", "category": "account_specific"},
-    {"input": "All my data is gone and I am furious", "expected_outcome": "escalated", "category": "emotional"},
+    {"input": "I want to speak to a human", "expected_outcome": "escalated", "category": "out_of_scope"},
+    {"input": "Why was I charged $1234 last Friday?", "expected_outcome": "escalated", "category": "out_of_scope"},
+    {"input": "All my data is gone and I am furious", "expected_outcome": "escalated", "category": "out_of_scope"},
     {"input": "Does HelpDesk integrate with Microsoft Teams?", "expected_outcome": "escalated", "category": "out_of_scope"},
     # Trick questions (should not hallucinate)
-    {"input": "What plan levels do you offer?", "expected_outcome": "escalated", "category": "no_faq_coverage"},
-    {"input": "Can I white-label HelpDesk?", "expected_outcome": "escalated", "category": "no_faq_coverage"},
+    {"input": "What plan levels do you offer?", "expected_outcome": "escalated", "category": "trick"},
+    {"input": "Can I white-label HelpDesk?", "expected_outcome": "escalated", "category": "trick"},
     # Edge cases
-    {"input": "hi", "expected_outcome": "clarified", "category": "greeting"},
-    {"input": "", "expected_outcome": "clarified", "category": "empty"},
+    {"input": "hi", "expected_outcome": "clarified", "category": "edge_case"},
+    {"input": "", "expected_outcome": "clarified", "category": "edge_case"},
 ]
 
 def classify_outcome(result: dict) -> str:
