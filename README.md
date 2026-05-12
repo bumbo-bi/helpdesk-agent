@@ -13,3 +13,19 @@ This agent handles customer support questions for HelpDesk. It can:
 - Built on Claude (Anthropic API) with tool use
 - Tools: `search_faqs`, `escalate_to_human`, `request_clarification`
 - System prompt that enforces: search before answering, escalate rather than hallucinate
+## Evaluation
+20 test cases covering happy path (exact FAQ matches), paraphrased (same intent but different words), multi-part (compound questions), ambiguous (could mean several things), out-of-scope (not handled by FAQ), trick (agent must not hallucinate), and edge case (greetings, empty input) queries. Each test asserts an expected outcome (answered / clarified / escalated).
+| Category | Pass rate |
+|----------|-----------|
+| happy path | 4/4 |
+| paraphrased | 4/4 |
+| multi_part | 2/2 |
+| ambiguous | 2/2 |
+| out_of_scope | 4/4 |
+| trick | 2/2 |
+| edge_case | 2/2 |
+| **Overall** | **20/20** |
+## What I learned
+Initial evaluation showed three failures (one in ambiguous and two in edge cases). Investigation revealed two distinct issues:
+1. The agent was asking clarifying questions in free text instead of calling `request_clarification`, bypassing the structured clarification path. Fixing by adding explicit instruction in the system prompt requiring tool use for clarification. STILL IN PROGRESS
+2. Empty user input crashed the API call before reaching the agent. Fixed by adding an upstream guard that returns a clarification response without calling the API.
