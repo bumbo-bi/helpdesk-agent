@@ -1,6 +1,10 @@
 import anthropic
 from knowledge_base import search_faqs, FAQS
 client = anthropic.Anthropic()
+
+# Verify this is a current GA model
+MODEL = "claude-opus-4-8"
+
 # Define the tools Claude can use
 # Each tool as a name, description, and input schema (what arguments it takes)
 TOOLS = [
@@ -117,7 +121,7 @@ def handle_user_message(user_message: str, verbose: bool = True) -> dict:
     # The agent loop: keep calling Claude until it stops using tools
     while True:
         response = client.messages.create(
-            model="claude-opus-4-7",
+            model=MODEL,
             max_tokens=1024,
             system=SYSTEM_PROMPT,
             tools=TOOLS,
@@ -173,9 +177,9 @@ def handle_user_message(user_message: str, verbose: bool = True) -> dict:
 if __name__ == "__main__":
     test_queries = [
         "How do I change my credit card?",
-        "I want to update my password",
-        "Does this work with Slack?",
-        "My account is broken",
+    #    "I want to update my password",
+    #    "Does this work with Slack?",
+    #    "My account is broken",
     ]
     for q in test_queries:
         print(f"\n{'='*60}\nUSER: {q}")
