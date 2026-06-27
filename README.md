@@ -26,6 +26,8 @@ This agent handles customer support questions for HelpDesk. It can:
 | edge_case | 2/2 |
 | **Overall** | **20/20** |
 ## What I learned
-Initial evaluation showed three failures (one in ambiguous and two in edge cases). Investigation revealed two distinct issues:
-1. The agent was asking clarifying questions in free text instead of calling `request_clarification`, bypassing the structured clarification path. Fixing by adding explicit instruction in the system prompt requiring tool use for clarification. STILL IN PROGRESS
+Initial evaluation showed three failures (one in ambiguous and two in edge cases). In addition, the edge cases produced inconsistent results. Investigation revealed two distinct issues:
+1. The agent was asking clarifying questions in free text instead of calling `request_clarification`, bypassing the structured clarification path. Fixed by strengthening the system prompt to require the tool, which reduced the failure rate; the ambiguous and edge cases have passed on repeated runs since.
 2. Empty user input crashed the API call before reaching the agent. Fixed by adding an upstream guard that returns a clarification response without calling the API.
+
+Because of the inconsistent results in prior edge case runs, the fix for #1 is a mitigation. The failure is probabilistic: a prompt lowers how often the model takes the free-text path without changing what the code does when it still does.
